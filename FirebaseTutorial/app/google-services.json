@@ -1,6 +1,6 @@
 {
   "project_info": {
-    "project_number": "Aquí va tu número de proyecto",
+    "project_number": "",
     "project_id": "fir-tutorial-android-7cv3",
     "storage_bucket": "fir-tutorial-android-7cv3.firebasestorage.app"
   },
@@ -12,15 +12,25 @@
           "package_name": "ovh.gabrielhuav.firebasetutorial"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "Aquí va tu oauth_client",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "Aquí va tu llave generada por Firebase"
+          "current_key": "Aquí va tu api key"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Aquí va tu oauth_client x2",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

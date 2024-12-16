@@ -1,0 +1,10 @@
+<resources>
+    <!-- Tema principal -->
+    <style name="Theme.FirebaseTutorial" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Personalización del tema -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+</resources>
