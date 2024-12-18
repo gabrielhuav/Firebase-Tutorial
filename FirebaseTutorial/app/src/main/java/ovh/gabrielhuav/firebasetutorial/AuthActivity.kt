@@ -1,19 +1,26 @@
 package ovh.gabrielhuav.firebasetutorial
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
 
 class AuthActivity : AppCompatActivity() {
 
@@ -21,11 +28,42 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth: FirebaseAuth
 
+    companion object {
+        private const val REQUEST_CODE_NOTIFICATIONS = 1001
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
-        // Inicialización
+        // Permiso de notificaciones para Android 13+ (Tiramisu)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_CODE_NOTIFICATIONS
+                )
+            }
+        }
+
+        // Obtener el Token de FCM
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("FCM", "Token de registro: $token")
+                // Envía el token al servidor si es necesario
+                sendTokenToServer(token)
+            } else {
+                Log.e("FCM", "Error al obtener el token", task.exception)
+            }
+        }
+
+        // Inicialización de Firebase
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         firebaseAuth = FirebaseAuth.getInstance()
 
@@ -40,7 +78,7 @@ class AuthActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // UI
+        // Referencias UI
         val emailInput = findViewById<EditText>(R.id.username_input)
         val passwordInput = findViewById<EditText>(R.id.password_input)
         val loginButton = findViewById<Button>(R.id.login_button)
@@ -97,14 +135,12 @@ class AuthActivity : AppCompatActivity() {
         }
 
         googleLoginButton.setOnClickListener {
-            // Cerrar sesión activa antes de lanzar el flujo
-            googleSignInClient.signOut().addOnCompleteListener {
-                val signInIntent = googleSignInClient.signInIntent
-                googleLoginLauncher.launch(signInIntent)
-            }
+            val signInIntent = googleSignInClient.signInIntent
+            googleLoginLauncher.launch(signInIntent)
         }
     }
 
+    // Firebase Auth con Google
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
@@ -126,7 +162,27 @@ class AuthActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun sendTokenToServer(token: String) {
+        Log.d("FCM", "Token enviado al servidor: $token")
+        // Aquí implementa la lógica para enviar el token al backend si es necesario
+    }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_NOTIFICATIONS) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("FCM", "Permisos de notificación concedidos")
+            } else {
+                Log.d("FCM", "Permisos de notificación denegados")
+            }
+        }
     }
 }

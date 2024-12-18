@@ -14,20 +14,36 @@
       },
       "oauth_client": [
         {
-          "client_id": "Aquí va tu oauth_client",
+          "client_id": "",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ovh.gabrielhuav.firebasetutorial",
+            "certificate_hash": ""
+          }
+        },
+        {
+          "client_id": "",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ovh.gabrielhuav.firebasetutorial",
+            "certificate_hash": ""
+          }
+        },
+        {
+          "client_id": "",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "Aquí va tu api key"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "Aquí va tu oauth_client x2",
+              "client_id": "",
               "client_type": 3
             }
           ]

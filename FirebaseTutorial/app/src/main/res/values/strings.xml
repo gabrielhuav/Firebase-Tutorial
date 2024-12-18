@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Firebase Tutorial</string>
-    <string name="default_web_client_id">Aquí va tu oauth_client</string>
+    <string name="default_web_client_id"></string>
 </resources>

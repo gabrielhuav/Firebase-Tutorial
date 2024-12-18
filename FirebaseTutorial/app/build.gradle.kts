@@ -57,6 +57,8 @@ dependencies {
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 
+    implementation("com.google.firebase:firebase-messaging") // Agrega esta línea para las notifcaciones
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,6 +70,7 @@ dependencies {
     implementation(libs.play.services.measurement.api)
     implementation(libs.androidx.appcompat)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
